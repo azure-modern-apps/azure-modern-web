@@ -6,9 +6,9 @@
       "direction": "in",
       "name": "req",
       "methods": [
-        "post"
+        "delete"
       ],
-      "route": "products"
+      "route": "products/{id}"
     },
     {
       "type": "http",
@@ -16,5 +16,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/product-post/index.js"
+  "scriptFile": "../dist/product-delete/index.js"
 }

@@ -1,28 +1,23 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
-import { createConnection } from './../core';
+import { createConnection, Product } from './../core';
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
-    context.log('HTTP trigger function processed a request.');
-    const name = (req.query.name || (req.body && req.body.name));
+    const { db, connection } = await createConnection();
+    const productsCollection = db.collection<Product>('samplecollection');
 
-    if (name) {
-        const { db, connection } = await createConnection();
-        const productsCollection = db.collection('samplecollection');
-
-        const products = await productsCollection.count();
-        context.log('products', products);
-        connection.close()
+    try {
+        const products = await productsCollection.find({}).limit(20).toArray();
+        connection.close();
         context.res = {
-            // status: 200, /* Defaults to 200 */
-            body: "Hello " + (req.query.name || req.body.name)
+            body: products
         };
-    }
-    else {
+    } catch (error) {
         context.res = {
             status: 400,
-            body: "Please pass a name on the query string or in the request body"
+            body: 'error' + error
         };
-    }
+    };
+
 };
 
 export default httpTrigger;

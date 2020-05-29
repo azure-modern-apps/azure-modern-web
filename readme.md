@@ -11,3 +11,6 @@ Github actions deployment:
 
 APIM and openapi 
 - https://docs.microsoft.com/en-us/azure/azure-functions/functions-openapi-definition
+
+Functions and mongodb client 
+- https://dev.to/azure/ezra-s-potluck-day-4-of-25daysofserverless-challenge-4pd6

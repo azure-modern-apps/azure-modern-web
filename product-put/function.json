@@ -6,7 +6,7 @@
       "direction": "in",
       "name": "req",
       "methods": [
-        "post"
+        "put"
       ],
       "route": "products"
     },
@@ -16,5 +16,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/product-post/index.js"
+  "scriptFile": "../dist/product-put/index.js"
 }
