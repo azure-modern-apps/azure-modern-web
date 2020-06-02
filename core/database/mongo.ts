@@ -1,10 +1,5 @@
 import { Db } from "mongodb";
-
 const MongoClient = require('mongodb').MongoClient;
-
-const config = {
-    dbName: "sampledatabase"
-};
 
 export async function createConnection() {
     const connection = await MongoClient.connect(process.env['CONNECTION_STRING'], {
@@ -12,9 +7,6 @@ export async function createConnection() {
         useUnifiedTopology: true,
         useCreateIndex: true
     });
-    const db: Db = connection.db(config.dbName);
-    return {
-        connection,
-        db
-    };
+    const db: Db = connection.db('sampledatabase');
+    return { connection, db };
 }
