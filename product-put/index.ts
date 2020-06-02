@@ -1,21 +1,29 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
+import { createConnection, Product } from './../core';
+const { ObjectID } = require('mongodb')
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
-    context.log('HTTP trigger function processed a request.');
-    const name = (req.query.name || (req.body && req.body.name));
+    const { db, connection } = await createConnection();
+    const productsCollection = db.collection<Product>('samplecollection');
+    const product:Product = {id:req.body.id, name: req.body.name, price: req.body.price};
 
-    if (name) {
+    try {
+        const result = await productsCollection.findOneAndUpdate(
+            { _id: ObjectID(product.id) },
+            { $set: product }
+          )        
+        connection.close();
         context.res = {
-            // status: 200, /* Defaults to 200 */
-            body: "Hello " + (req.query.name || req.body.name)
+            body: result
         };
-    }
-    else {
+    } catch (error) {
+        connection.close();
         context.res = {
             status: 400,
-            body: "Please pass a name on the query string or in the request body"
+            body: 'error' + error
         };
-    }
+    };
+
 };
 
 export default httpTrigger;

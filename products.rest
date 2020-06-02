@@ -10,3 +10,14 @@ content-type: application/json
     price: 1
 }
 
+###
+
+PUT http://localhost:7071/api/products  HTTP/1.1
+content-type: application/json
+
+{
+    id: "5ed63c3c6349bd51945b7c86"
+    name: "foo2",
+    price: 2
+}
+
