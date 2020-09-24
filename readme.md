@@ -7,6 +7,10 @@ Azure MVP Challenge https://dev.to/azure/ezra-s-potluck-day-4-of-25daysofserverl
 1. Add connection string to keys in github or locally in localsettings.json
 2. Add connection string to app service configuration for functions
 
+## Design Decisions
+
+### ARM Templates
+An Infrastructure as Code (IaC) approach will be taken for the Azure platform deployment. Generic ARM templates will be created for each resource type. This is so that multiple instances of a given resource type can be deployed using the same template. CI/CD pipelines will orchestrate the platform deployment.
 
 ## Info
 Github actions deployment:
