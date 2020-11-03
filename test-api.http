@@ -1,0 +1,11 @@
+## To use this tool you need to install the VSCode extenstion Press F1, type ext install then search for rest-client.
+
+GET https://api.commbank.com.au/public/cds-au/v1/discovery/status HTTP/1.1
+Accept: "application/json"
+x-min-v: 1
+x-v: 1
+
+###
+GET https://api.commbank.com.au/public/cds-au/v1/banking/products HTTP/1.1
+Accept: "application/json"
+x-v: 1
