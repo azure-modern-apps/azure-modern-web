@@ -88,4 +88,4 @@ jobs:
           keyVaultName="${{ env.KEY_VAULT_NAME }}"
           location="${{ env.LOCATION }}"
           objectId="${{ secrets.AZURE_SP_OBJECT_ID }}"
-          secretsPermissions=[get,list]
+          secretsPermissions="[get, list]"
