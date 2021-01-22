@@ -4,7 +4,8 @@ name: Azure Deploy
 
 jobs:
 
-  build-and-deploy:
+  deploy:
+    environment: DEV
     runs-on: ubuntu-latest
     steps:
 
