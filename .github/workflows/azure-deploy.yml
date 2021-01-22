@@ -35,4 +35,4 @@ jobs:
           location="${{ env.LOCATION }}"
           primaryRegion="${{ env.COSMOS_PRIMARY_REGION }}"
           secondaryRegion="${{ env.COSMOS_SECONDARY_REGION }}"
-          databaseName="${{ env.COSMOS_DB_NAME }}""
+          databaseName="${{ env.COSMOS_DB_NAME }}"
