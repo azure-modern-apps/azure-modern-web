@@ -2,12 +2,12 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-	"hostingPlanName": {
-	  "type": "string",
-	   "metadata": {
+    "hostingPlanName": {
+      "type": "string",
+      "metadata": {
         "description": "Name for shared hosting plan."
       }
-	},
+    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
@@ -16,7 +16,7 @@
       }
     }
   },
-  "variables": { },
+  "variables": {},
   "resources": [
     {
       "type": "Microsoft.Web/serverfarms",
