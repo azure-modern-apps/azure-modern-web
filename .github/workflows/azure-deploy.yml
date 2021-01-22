@@ -30,9 +30,9 @@ jobs:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
         resourceGroupName: ${{ secrets.AZURE_RG }}
         template: ./infra/cosmosDb/azuredeploy.json
-        parameters: 
-          accountName='${{ env.COSMOS_ACCOUNT_NAME }}'
-          location='${{ env.LOCATION }}'
-          primaryRegion='${{ env.COSMOS_PRIMARY_REGION }}'
-          secondaryRegion='${{ env.COSMOS_SECONDARY_REGION }}'
-          databaseName='${{ env.COSMOS_DB_NAME }}'
+        parameters: |
+          accountName=${{ env.COSMOS_ACCOUNT_NAME }}
+          location=${{ env.LOCATION }}
+          primaryRegion=${{ env.COSMOS_PRIMARY_REGION }}
+          secondaryRegion=${{ env.COSMOS_SECONDARY_REGION }}
+          databaseName=${{ env.COSMOS_DB_NAME }}
