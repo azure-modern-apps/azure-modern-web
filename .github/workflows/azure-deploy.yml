@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
-      LOCATION: 'AustraliaEast'
+      LOCATION: 'Australia East'
       COSMOS_ACCOUNT_NAME: 'cosmos-amw-dev-aue-001'
-      COSMOS_PRIMARY_REGION: 'AustraliaEast'
-      COSMOS_SECONDARY_REGION: 'AustraliaSoutheast'
+      COSMOS_PRIMARY_REGION: 'Australia East'
+      COSMOS_SECONDARY_REGION: 'Australia Southeast'
       COSMOS_DB_NAME: 'BankingDatabase'
     
     steps:
@@ -30,7 +30,7 @@ jobs:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
         resourceGroupName: ${{ secrets.AZURE_RG }}
         template: ./infra/cosmosDb/azuredeploy.json
-        parameters: |
+        parameters:
           accountName="${{ env.COSMOS_ACCOUNT_NAME }}"
           location="${{ env.LOCATION }}"
           primaryRegion="${{ env.COSMOS_PRIMARY_REGION }}"
