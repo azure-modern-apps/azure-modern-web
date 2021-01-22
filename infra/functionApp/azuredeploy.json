@@ -12,14 +12,14 @@
     "hostingPlanName": {
       "type": "string",
       "metadata": {
-          "description": "Name for shared hosting plan."
-        }
+        "description": "Name for shared hosting plan."
+      }
     },
     "storageAccountName": {
       "type": "string",
       "metadata": {
-          "description": "Name for shared storage account."
-        }
+        "description": "Name for shared storage account."
+      }
     },
     "location": {
       "type": "string",
