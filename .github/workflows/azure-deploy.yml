@@ -7,13 +7,32 @@ jobs:
   deploy:
     environment: DEV
     runs-on: ubuntu-latest
+    
+    env:
+      LOCATION: 'Australia East'
+      COSMOS_ACCOUNT_NAME: 'cosmos-amw-dev-aue-001'
+      COSMOS_PRIMARY_REGION: 'Australia East'
+      COSMOS_SECONDARY_REGION: 'Australia Southeast'
+      COSMOS_DB_NAME: 'BankingDatabase'
+    
     steps:
+
+    - uses: actions/checkout@v2
 
     - name: Login via Az module
       uses: azure/login@v1
       with:
-        creds: ${{secrets.AZURE_CREDENTIALS}}
-
-    - name: Run Az CLI script
-      run: |
-        az group show --name "rg-amw-dev-aue-001"
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+    - name: Cosmos Db ARM deploy
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+        resourceGroupName: ${{ secrets.AZURE_RG }}
+        template: ./infra/cosmosDb/azuredeploy.json
+        parameters: 
+          accountName={{ env.COSMOS_ACCOUNT_NAME }}
+          location={{ env.LOCATION }}
+          primaryRegion={{ env.COSMOS_PRIMARY_REGION }}
+          secondaryRegion={{ env.COSMOS_SECONDARY_REGION }}
+          databaseName={{ env.COSMOS_DB_NAME }}
