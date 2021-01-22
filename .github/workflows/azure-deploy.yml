@@ -21,6 +21,8 @@ jobs:
       STORAGE_ACCOUNT_NAME: 'stamwdevaue001'
 
       FUNCTION_APP_NAME: 'func-amw-dev-aue-001'
+
+      KEY_VAULT_NAME: 'kv-amw-dev-aue-001'
       
     steps:
 
@@ -75,3 +77,15 @@ jobs:
           hostingPlanName="${{ env.APP_SERVICE_PLAN_NAME }}"
           storageAccountName="${{ env.STORAGE_ACCOUNT_NAME }}"
           location="${{ env.LOCATION }}"
+
+    - name: Key Vault ARM deploy
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+        resourceGroupName: ${{ secrets.AZURE_RG }}
+        template: ./infra/keyVault/azuredeploy.json
+        parameters:
+          keyVaultName="${{ env.KEY_VAULT_NAME }}"
+          location="${{ env.LOCATION }}"
+          objectId="${{ secrets.AZURE_SP_OBJECT_ID }}"
+          secretsPermissions="get, list"
