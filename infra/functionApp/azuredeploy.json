@@ -10,17 +10,17 @@
       }
     },
     "hostingPlanName": {
-	  "type": "string",
-	   "metadata": {
-        "description": "Name for shared hosting plan."
-      }
-	},
-	"storageAccountName": {
-	  "type": "string",
-	   "metadata": {
-        "description": "Name for shared storage account."
-      }
-	},
+      "type": "string",
+      "metadata": {
+          "description": "Name for shared hosting plan."
+        }
+    },
+    "storageAccountName": {
+      "type": "string",
+      "metadata": {
+          "description": "Name for shared storage account."
+        }
+    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
