@@ -10,6 +10,7 @@ jobs:
     
     env:
       LOCATION: 'Australia East'
+      
       COSMOS_ACCOUNT_NAME: 'cosmos-amw-dev-aue-001'
       COSMOS_PRIMARY_REGION: 'Australia East'
       COSMOS_SECONDARY_REGION: 'Australia Southeast'

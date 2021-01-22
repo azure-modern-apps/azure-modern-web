@@ -26,6 +26,7 @@ This project will follow the [GitHub Flow](https://guides.github.com/introductio
 
 ### Naming Conventions
 When working on large projects with multiple developers a consistent branching strategy is important. The convention followed can be defined to suit the teams needs and requirements, the important point is to maintain consistency. 
+[Naming convention documentation](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming#example-names-databases)
 
 For this project we will follow the format "grouping/issueNumber-description" where:
 - **grouping** is a logical grouping such as 'feature' or 'bugfix'
