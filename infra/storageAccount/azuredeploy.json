@@ -37,18 +37,19 @@
             "properties": {
                 "accessTier": "Hot"
             }
-        },
-        {
-            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-            "apiVersion": "2018-07-01",
-            "name": "[concat(parameters('storageAccountName'), '/default/', parameters('containerNames')[copyIndex()])]",
-            "copy": {
-                "name": "containerNames",
-                "count": "[length(parameters('containerNames'))]"
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
-            ]
         }
+        // ,
+        // {
+        //     "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+        //     "apiVersion": "2018-07-01",
+        //     "name": "[concat(parameters('storageAccountName'), '/default/', parameters('containerNames')[copyIndex('containerNames')])]",
+        //     "copy": {
+        //         "name": "containerNames",
+        //         "count": "[length(parameters('containerNames'))]"
+        //     },
+        //     "dependsOn": [
+        //         "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+        //     ]
+        // }
     ]
 }
