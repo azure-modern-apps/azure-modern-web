@@ -108,7 +108,7 @@
             "tenantId": "[parameters('tenantId')]",
             "permissions": {
               "keys": "[parameters('keysPermissions')]",
-              "secrets": "[parameters('secretsPermissions')]"      
+              "secrets": "[parameters('secretsPermissions')]"
             }
           }
         ],
@@ -117,8 +117,8 @@
           "family": "A"
         },
         "networkAcls": {
-            "defaultAction": "Allow",
-            "bypass": "AzureServices"
+          "defaultAction": "Allow",
+          "bypass": "AzureServices"
         }
       }
     }
