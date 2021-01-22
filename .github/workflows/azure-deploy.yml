@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
-      LOCATION: 'Australia East'
+      LOCATION: 'AustraliaEast'
       COSMOS_ACCOUNT_NAME: 'cosmos-amw-dev-aue-001'
-      COSMOS_PRIMARY_REGION: 'Australia East'
-      COSMOS_SECONDARY_REGION: 'Australia Southeast'
+      COSMOS_PRIMARY_REGION: 'AustraliaEast'
+      COSMOS_SECONDARY_REGION: 'AustraliaSoutheast'
       COSMOS_DB_NAME: 'BankingDatabase'
     
     steps:
