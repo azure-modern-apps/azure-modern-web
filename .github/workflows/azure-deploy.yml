@@ -85,6 +85,9 @@ jobs:
           storageAccountName="${{ env.STORAGE_ACCOUNT_NAME }}"
           location="${{ env.LOCATION }}"
 
+    - run: echo "${{ steps.arm-cosmos-db }}"
+    - run: echo "${{ steps }}"
+
     - name: Key Vault ARM deploy
       uses: azure/arm-deploy@v1
       with:
