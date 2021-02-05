@@ -140,7 +140,7 @@
                 "List"
               ]
             }
-          },
+          }
         ],
         "sku": {
           "name": "[parameters('skuName')]",
