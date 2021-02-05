@@ -55,7 +55,7 @@ jobs:
 
     - run: echo "${{ steps.deploy.outputs }}"
     - run: echo "${{ steps.deploy.outputs.cosmosDbAccountKey }}"
-    # - run: echo "${{ steps.arm-cosmos-db }}"
+    - run: echo "${{ steps.arm-cosmos-db.outputs.cosmosDbAccountKey }}"
     # - run: echo "${{ steps }}"
 
     - name: App Service Plan ARM deploy
