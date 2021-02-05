@@ -24,9 +24,17 @@ This project will follow the [GitHub Flow](https://guides.github.com/introductio
 - Once the code is ready a Pull Request (PR) is raised to merge the branch back into master, a CI build and Unit Tests can execute on the branch to ensure the code is stable and other developers can review the code and make comments. 
 - Once all checks have passed the PR can be completed and the code merged back into master.
 
-### Naming Conventions
+## Naming Conventions
 When working on large projects with multiple developers a consistent branching strategy is important. The convention followed can be defined to suit the teams needs and requirements, the important point is to maintain consistency. 
 
+### Azure Resource Naming conventions
+
+- [Naming convention documentation](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming)
+
+- [Resource Abbreviations](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations)
+
+
+### Branch naming conventions
 For this project we will follow the format "grouping/issueNumber-description" where:
 - **grouping** is a logical grouping such as 'feature' or 'bugfix'
 - **issueNumber** is the GitHub issue number you are working on. This can be omitted for experimental branches that don't have a related issue
