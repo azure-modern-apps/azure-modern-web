@@ -153,11 +153,11 @@
   "outputs": {
     "cosmosDbAccountKey": {
       "type": "securestring",
-      "value": "first(ListConnectionStrings.connectionStrings).connectionString"
+      "value": "[first(ListConnectionStrings.connectionStrings).connectionString]"
     },
     "cosmosDbAccountKeyInsecure": {
       "type": "string",
-      "value": "ListConnectionStrings.connectionStrings[index].connectionString"
+      "value": "[ListConnectionStrings.connectionStrings[0].connectionString]"
     }
   }
 }
