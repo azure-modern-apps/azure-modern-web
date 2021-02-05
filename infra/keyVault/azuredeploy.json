@@ -89,6 +89,12 @@
       "metadata": {
         "description": "Specifies whether the key vault is a standard vault or a premium vault."
       }
+    },
+    "cosmosDbAccountKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Specifies the CosmosDB account key secret value."
+      }
     }
   },
   "resources": [
@@ -120,7 +126,20 @@
           "defaultAction": "Allow",
           "bypass": "AzureServices"
         }
-      }
+      },
+      "resources": [
+        {
+          "name": "CosmosAccountKey",
+          "type": "secrets",
+          "apiVersion": "2019-09-01",
+          "properties": {
+            "value": "[parameters('cosmosDbAccountKey')]"
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+          ]
+        }
+      ]
     }
   ]
 }
