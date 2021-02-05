@@ -53,11 +53,6 @@ jobs:
           secondaryRegion="${{ env.COSMOS_SECONDARY_REGION }}"
           databaseName="${{ env.COSMOS_DB_NAME }}"
 
-
-    - run: echo "${{ steps.arm-cosmos-db.outputs.cosmosDbAccountKey }}"
-    - run: echo "${{ steps.arm-cosmos-db.outputs.cosmosDbAccountKeyInsecure }}"
-    # - run: echo "${{ steps }}"
-
     - name: App Service Plan ARM deploy
       uses: azure/arm-deploy@v1
       with:
@@ -100,5 +95,4 @@ jobs:
           keyVaultName="${{ env.KEY_VAULT_NAME }}"
           location="${{ env.LOCATION }}"
           objectId="${{ secrets.AZURE_SP_OBJECT_ID }}"
-          cosmosDbAccountKey="${{ steps.arm-cosmos-db.outputs.cosmosDbAccountKey }}"
-          cosmosDbAccountKeyInsecure="${{ steps.arm-cosmos-db.outputs.cosmosDbAccountKeyInsecure }}"
+          cosmosDbAccountKey="${{ steps.arm-cosmos-db.outputs.cosmosDbAccountKeyInsecure }}"
