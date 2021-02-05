@@ -53,10 +53,10 @@ jobs:
           secondaryRegion="${{ env.COSMOS_SECONDARY_REGION }}"
           databaseName="${{ env.COSMOS_DB_NAME }}"
 
-    - run: echo "${{ steps.deploy }}"
-    - run: echo "${{ steps.deploy.cosmosDbAccountKey }}"
-    - run: echo "${{ steps.arm-cosmos-db }}"
-    - run: echo "${{ steps }}"
+    - run: echo "${{ steps.deploy.outputs }}"
+    - run: echo "${{ steps.deploy.outputs.cosmosDbAccountKey }}"
+    # - run: echo "${{ steps.arm-cosmos-db }}"
+    # - run: echo "${{ steps }}"
 
     - name: App Service Plan ARM deploy
       uses: azure/arm-deploy@v1
