@@ -95,4 +95,4 @@ jobs:
           keyVaultName="${{ env.KEY_VAULT_NAME }}"
           location="${{ env.LOCATION }}"
           objectId="${{ secrets.AZURE_SP_OBJECT_ID }}"
-          cosmosDbAccountKey="${{ steps.arm-cosmos-db.outputs.cosmosDbAccountKeyInsecure }}"
+          cosmosDbAccountName="${{ steps.arm-cosmos-db.outputs.cosmosDbAccountName }}"

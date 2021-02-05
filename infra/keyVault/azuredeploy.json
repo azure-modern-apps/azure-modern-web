@@ -90,10 +90,10 @@
         "description": "Specifies whether the key vault is a standard vault or a premium vault."
       }
     },
-    "cosmosDbAccountKey": {
-      "type": "securestring",
+    "cosmosDbAccountName": {
+      "type": "string",
       "metadata": {
-        "description": "Specifies the CosmosDB account key secret value."
+        "description": "Specifies the CosmosDB account name."
       }
     }
   },
@@ -133,7 +133,7 @@
           "type": "secrets",
           "apiVersion": "2019-09-01",
           "properties": {
-            "value": "[parameters('cosmosDbAccountKey')]"
+            "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDbAccountName')), providers('Microsoft.DocumentDB', 'databaseAccounts').apiVersions[0]).primaryMasterKey]"
           },
           "dependsOn": [
             "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
