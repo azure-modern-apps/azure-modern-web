@@ -23,7 +23,7 @@ Please ensure the following pre-requisities are installed and configured in orde
 
 **BankingApi.Model** - Contains the database model classes
 
-**BankingApi.Test** - Unit test project for hte Banking API
+**BankingApi.Test** - Unit test project for the Banking API
 
 ## Core Concepts
 
