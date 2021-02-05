@@ -2,8 +2,9 @@ on:
   push:
     branches:
     - master
-    paths:
-    - 'infra/**'
+    - feature/**
+    # paths:
+    # - 'infra/**'
 
 name: Azure Deploy
 
@@ -39,6 +40,7 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
       
     - name: Cosmos Db ARM deploy
+      id: arm-cosmos-db
       uses: azure/arm-deploy@v1
       with:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
@@ -93,3 +95,4 @@ jobs:
           keyVaultName="${{ env.KEY_VAULT_NAME }}"
           location="${{ env.LOCATION }}"
           objectId="${{ secrets.AZURE_SP_OBJECT_ID }}"
+          cosmosDbAccountName="${{ steps.arm-cosmos-db.outputs.cosmosDbAccountName }}"

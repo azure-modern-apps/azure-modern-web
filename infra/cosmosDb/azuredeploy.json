@@ -149,5 +149,11 @@
         }
       }
     }
-  ]
+  ],
+  "outputs": {
+    "cosmosDbAccountName": {
+      "type": "string",
+      "value": "[variables('accountName')]"
+    }
+  }
 }
