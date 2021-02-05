@@ -53,6 +53,11 @@ jobs:
           secondaryRegion="${{ env.COSMOS_SECONDARY_REGION }}"
           databaseName="${{ env.COSMOS_DB_NAME }}"
 
+    - run: echo "${{ steps.deploy }}"
+    - run: echo "${{ steps.deploy.cosmosDbAccountKey }}"
+    - run: echo "${{ steps.arm-cosmos-db }}"
+    - run: echo "${{ steps }}"
+
     - name: App Service Plan ARM deploy
       uses: azure/arm-deploy@v1
       with:
@@ -84,9 +89,6 @@ jobs:
           hostingPlanName="${{ env.APP_SERVICE_PLAN_NAME }}"
           storageAccountName="${{ env.STORAGE_ACCOUNT_NAME }}"
           location="${{ env.LOCATION }}"
-
-    - run: echo "${{ steps.arm-cosmos-db }}"
-    - run: echo "${{ steps }}"
 
     - name: Key Vault ARM deploy
       uses: azure/arm-deploy@v1
