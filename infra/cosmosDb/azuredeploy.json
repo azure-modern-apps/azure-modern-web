@@ -153,11 +153,11 @@
   "outputs": {
     "cosmosDbAccountKey": {
       "type": "securestring",
-      "value": "[ListConnectionStrings.connectionStrings]"
+      "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('accountName')), '2020-06-01-preview').primaryMasterKey]"
     },
     "cosmosDbAccountKeyInsecure": {
       "type": "string",
-      "value": "[ListConnectionStrings.connectionStrings[0].connectionString]"
+      "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('accountName')), '2020-06-01-preview')]"
     }
   }
 }
