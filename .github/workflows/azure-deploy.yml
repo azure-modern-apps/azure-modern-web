@@ -53,9 +53,9 @@ jobs:
           secondaryRegion="${{ env.COSMOS_SECONDARY_REGION }}"
           databaseName="${{ env.COSMOS_DB_NAME }}"
 
-    - run: echo "${{ steps.deploy.outputs }}"
-    - run: echo "${{ steps.deploy.outputs.cosmosDbAccountKey }}"
+
     - run: echo "${{ steps.arm-cosmos-db.outputs.cosmosDbAccountKey }}"
+    - run: echo "${{ steps.arm-cosmos-db.outputs.cosmosDbAccountKeyInsecure }}"
     # - run: echo "${{ steps }}"
 
     - name: App Service Plan ARM deploy
