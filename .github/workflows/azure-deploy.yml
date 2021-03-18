@@ -25,8 +25,15 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Install bicep for az cli
+        run: | 
+          curl -Lo bicepinstall https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64
+          chmod +x ./bicepinstall
+          sudo mv ./bicepinstall /usr/local/bin/bicep
+          
       - name: Deploy Infrastructure
         uses: azure/CLI@v1
         with:
           inlineScript: |
+            az bicep install
             az deployment sub create -f ./infra/main.bicep --name "rg-${{ env.APP_NAME }}" --location="${{ env.LOCATION }}" --parameters applicationName="${{ env.APP_NAME }}" objectId="${{ secrets.AZURE_SP_OBJECT_ID }}"

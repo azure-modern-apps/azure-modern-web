@@ -12,14 +12,6 @@ resource apiManagement 'Microsoft.ApiManagement/service@2019-12-01' = {
   properties: {
     publisherEmail: publisherEmail
     publisherName: publisherName
-    // customProperties: {
-    //   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10': 'False'
-    //   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11': 'False'
-    //   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls10': 'False'
-    //   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls11': 'False'
-    //   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Ssl30': 'False'
-    //   'Microsoft.WindowsAzure.ApiManagement.Gateway.Protocols.Server.Http2': 'False'
-    // }
   }
   identity: {
     type: 'SystemAssigned'
