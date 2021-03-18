@@ -29,4 +29,5 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
+            az bicep install
             az deployment sub create -f ./infra/main.bicep --name "rg-${{ env.APP_NAME }}" --location="${{ env.LOCATION }}" --parameters applicationName="${{ env.APP_NAME }}" objectId="${{ secrets.AZURE_SP_OBJECT_ID }}"
