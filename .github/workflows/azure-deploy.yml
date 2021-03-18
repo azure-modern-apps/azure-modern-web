@@ -5,6 +5,7 @@ on:
       - feature/**
     # paths:
     #   - "infra/**"
+  workflow_dispatch:
 
 name: Azure Deploy
 
@@ -15,7 +16,7 @@ jobs:
 
     env:
       LOCATION: "australiaeast"
-      APPLICATION_NAME: "amw-dev-aue-001"
+      APPLICATION_NAME: "amw-dev-aue-002"
 
     steps:
       - uses: actions/checkout@v2
