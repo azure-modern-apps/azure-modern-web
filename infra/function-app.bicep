@@ -1,6 +1,6 @@
 param applicationName string
 param keyVaultName string
-param location string = resourceGroup().location
+param location string
 param storageAccount object
 param appInsightsInstrumentationKey string
 param planId string

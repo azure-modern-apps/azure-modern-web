@@ -1,11 +1,12 @@
 param applicationName string
 param keyVaultName string
+param location string
 
 var storageAccountName = format('stg{0}', replace(applicationName, '-', ''))
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2019-06-01' = {
   name: storageAccountName
-  location: resourceGroup().location
+  location: location
   sku: {
     name: 'Standard_LRS'
     tier: 'Standard'

@@ -1,6 +1,6 @@
 param applicationName string
 param objectId string
-param skuName string = 'standard'
+param location string
 
 var secretsAllowArray = [
   'get'
@@ -11,11 +11,11 @@ var secretsAllowArray = [
 
 resource keyVault 'Microsoft.KeyVault/vaults@2019-09-01' = {
   name: 'kv-${applicationName}'
-  location: resourceGroup().location
+  location: location
   properties: {
     tenantId: subscription().tenantId
     sku: {
-      name: skuName
+      name: 'standard'
       family: 'A'
     }
     accessPolicies: [

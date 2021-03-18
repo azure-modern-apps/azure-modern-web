@@ -1,11 +1,14 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "objectId": {
       "type": "string"
     },
     "applicationName": {
+      "type": "string"
+    },
+    "location": {
       "type": "string"
     },
     "publisherEmail": {
@@ -24,30 +27,26 @@
   "functions": [],
   "resources": [
     {
-      "type": "Microsoft.Resources/resourceGroups",
-      "apiVersion": "2020-06-01",
-      "name": "[deployment().name]",
-      "location": "[deployment().location]"
-    },
-    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2019-10-01",
       "name": "apiManagementDeploy",
-      "resourceGroup": "[deployment().name]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
         },
         "mode": "Incremental",
         "parameters": {
+          "applicationName": {
+            "value": "[parameters('applicationName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
           "publisherEmail": {
             "value": "[parameters('publisherEmail')]"
           },
           "publisherName": {
             "value": "[parameters('publisherName')]"
-          },
-          "applicationName": {
-            "value": "[parameters('applicationName')]"
           }
         },
         "template": {
@@ -62,6 +61,9 @@
             },
             "applicationName": {
               "type": "string"
+            },
+            "location": {
+              "type": "string"
             }
           },
           "functions": [],
@@ -70,7 +72,7 @@
               "type": "Microsoft.ApiManagement/service",
               "apiVersion": "2019-12-01",
               "name": "[format('apim-{0}', parameters('applicationName'))]",
-              "location": "[resourceGroup().location]",
+              "location": "[parameters('location')]",
               "sku": {
                 "name": "Consumption",
                 "capacity": 0
@@ -91,16 +93,12 @@
             }
           }
         }
-      },
-      "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', deployment().name)]"
-      ]
+      }
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2019-10-01",
       "name": "frontDoorDeployment",
-      "resourceGroup": "[deployment().name]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -111,7 +109,7 @@
             "value": "[parameters('applicationName')]"
           },
           "apimHostname": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, deployment().name), 'Microsoft.Resources/deployments', 'apiManagementDeploy'), '2019-10-01').outputs.apimHostname.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'apiManagementDeploy'), '2019-10-01').outputs.apimHostname.value]"
           }
         },
         "template": {
@@ -185,15 +183,13 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, deployment().name), 'Microsoft.Resources/deployments', 'apiManagementDeploy')]",
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', deployment().name)]"
+        "[resourceId('Microsoft.Resources/deployments', 'apiManagementDeploy')]"
       ]
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2019-10-01",
       "name": "cosmosDbDeployment",
-      "resourceGroup": "[deployment().name]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -203,11 +199,14 @@
           "applicationName": {
             "value": "[parameters('applicationName')]"
           },
+          "location": {
+            "value": "[parameters('location')]"
+          },
           "cosmosDatabaseName": {
             "value": "[parameters('cosmosDatabaseName')]"
           },
           "keyVaultName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, deployment().name), 'Microsoft.Resources/deployments', 'keyVaultDeployment'), '2019-10-01').outputs.keyVaultName.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'keyVaultDeployment'), '2019-10-01').outputs.keyVaultName.value]"
           }
         },
         "template": {
@@ -222,6 +221,9 @@
             },
             "keyVaultName": {
               "type": "string"
+            },
+            "location": {
+              "type": "string"
             }
           },
           "functions": [],
@@ -230,7 +232,7 @@
               "type": "Microsoft.DocumentDB/databaseAccounts",
               "apiVersion": "2020-06-01-preview",
               "name": "[format('cosmos-{0}', parameters('applicationName'))]",
-              "location": "[resourceGroup().location]",
+              "location": "[parameters('location')]",
               "kind": "GlobalDocumentDB",
               "properties": {
                 "createMode": "Default",
@@ -239,7 +241,7 @@
                 },
                 "locations": [
                   {
-                    "locationName": "[resourceGroup().location]",
+                    "locationName": "[parameters('location')]",
                     "failoverPriority": 0,
                     "isZoneRedundant": false
                   }
@@ -278,15 +280,13 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, deployment().name), 'Microsoft.Resources/deployments', 'keyVaultDeployment')]",
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', deployment().name)]"
+        "[resourceId('Microsoft.Resources/deployments', 'keyVaultDeployment')]"
       ]
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2019-10-01",
       "name": "storageAccountDeployment",
-      "resourceGroup": "[deployment().name]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -296,8 +296,11 @@
           "applicationName": {
             "value": "[parameters('applicationName')]"
           },
+          "location": {
+            "value": "[parameters('location')]"
+          },
           "keyVaultName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, deployment().name), 'Microsoft.Resources/deployments', 'keyVaultDeployment'), '2019-10-01').outputs.keyVaultName.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'keyVaultDeployment'), '2019-10-01').outputs.keyVaultName.value]"
           }
         },
         "template": {
@@ -308,6 +311,9 @@
               "type": "string"
             },
             "keyVaultName": {
+              "type": "string"
+            },
+            "location": {
               "type": "string"
             }
           },
@@ -320,7 +326,7 @@
               "type": "Microsoft.Storage/storageAccounts",
               "apiVersion": "2019-06-01",
               "name": "[variables('storageAccountName')]",
-              "location": "[resourceGroup().location]",
+              "location": "[parameters('location')]",
               "sku": {
                 "name": "Standard_LRS",
                 "tier": "Standard"
@@ -369,15 +375,13 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, deployment().name), 'Microsoft.Resources/deployments', 'keyVaultDeployment')]",
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', deployment().name)]"
+        "[resourceId('Microsoft.Resources/deployments', 'keyVaultDeployment')]"
       ]
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2019-10-01",
       "name": "keyVaultDeployment",
-      "resourceGroup": "[deployment().name]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -386,6 +390,9 @@
         "parameters": {
           "applicationName": {
             "value": "[parameters('applicationName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
           },
           "objectId": {
             "value": "[parameters('objectId')]"
@@ -401,9 +408,8 @@
             "objectId": {
               "type": "string"
             },
-            "skuName": {
-              "type": "string",
-              "defaultValue": "standard"
+            "location": {
+              "type": "string"
             }
           },
           "functions": [],
@@ -420,11 +426,11 @@
               "type": "Microsoft.KeyVault/vaults",
               "apiVersion": "2019-09-01",
               "name": "[format('kv-{0}', parameters('applicationName'))]",
-              "location": "[resourceGroup().location]",
+              "location": "[parameters('location')]",
               "properties": {
                 "tenantId": "[subscription().tenantId]",
                 "sku": {
-                  "name": "[parameters('skuName')]",
+                  "name": "standard",
                   "family": "A"
                 },
                 "accessPolicies": [
@@ -446,36 +452,35 @@
             }
           }
         }
-      },
-      "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', deployment().name)]"
-      ]
+      }
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2019-10-01",
       "name": "functionAppDeployment",
-      "resourceGroup": "[deployment().name]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
         },
         "mode": "Incremental",
         "parameters": {
-          "appInsightsInstrumentationKey": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, deployment().name), 'Microsoft.Resources/deployments', 'appInsightsDeployment'), '2019-10-01').outputs.appInsightsInstrumentationKey.value]"
-          },
           "applicationName": {
             "value": "[parameters('applicationName')]"
           },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "appInsightsInstrumentationKey": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'appInsightsDeployment'), '2019-10-01').outputs.appInsightsInstrumentationKey.value]"
+          },
           "keyVaultName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, deployment().name), 'Microsoft.Resources/deployments', 'keyVaultDeployment'), '2019-10-01').outputs.keyVaultName.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'keyVaultDeployment'), '2019-10-01').outputs.keyVaultName.value]"
           },
           "storageAccount": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, deployment().name), 'Microsoft.Resources/deployments', 'storageAccountDeployment'), '2019-10-01').outputs.storageAccount.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'storageAccountDeployment'), '2019-10-01').outputs.storageAccount.value]"
           },
           "planId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, deployment().name), 'Microsoft.Resources/deployments', 'planDeployment'), '2019-10-01').outputs.planId.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'planDeployment'), '2019-10-01').outputs.planId.value]"
           }
         },
         "template": {
@@ -489,8 +494,7 @@
               "type": "string"
             },
             "location": {
-              "type": "string",
-              "defaultValue": "[resourceGroup().location]"
+              "type": "string"
             },
             "storageAccount": {
               "type": "object"
@@ -564,18 +568,16 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, deployment().name), 'Microsoft.Resources/deployments', 'appInsightsDeployment')]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, deployment().name), 'Microsoft.Resources/deployments', 'planDeployment')]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, deployment().name), 'Microsoft.Resources/deployments', 'keyVaultDeployment')]",
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', deployment().name)]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, deployment().name), 'Microsoft.Resources/deployments', 'storageAccountDeployment')]"
+        "[resourceId('Microsoft.Resources/deployments', 'appInsightsDeployment')]",
+        "[resourceId('Microsoft.Resources/deployments', 'planDeployment')]",
+        "[resourceId('Microsoft.Resources/deployments', 'keyVaultDeployment')]",
+        "[resourceId('Microsoft.Resources/deployments', 'storageAccountDeployment')]"
       ]
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2019-10-01",
       "name": "planDeployment",
-      "resourceGroup": "[deployment().name]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -584,6 +586,9 @@
         "parameters": {
           "applicationName": {
             "value": "[parameters('applicationName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
           }
         },
         "template": {
@@ -591,6 +596,9 @@
           "contentVersion": "1.0.0.0",
           "parameters": {
             "applicationName": {
+              "type": "string"
+            },
+            "location": {
               "type": "string"
             }
           },
@@ -600,7 +608,7 @@
               "type": "Microsoft.Web/serverfarms",
               "apiVersion": "2020-06-01",
               "name": "[format('plan-{0}', parameters('applicationName'))]",
-              "location": "[resourceGroup().location]",
+              "location": "[parameters('location')]",
               "kind": "functionapp",
               "sku": {
                 "name": "Y1"
@@ -614,16 +622,12 @@
             }
           }
         }
-      },
-      "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', deployment().name)]"
-      ]
+      }
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2019-10-01",
       "name": "appInsightsDeployment",
-      "resourceGroup": "[deployment().name]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -632,6 +636,9 @@
         "parameters": {
           "applicationName": {
             "value": "[parameters('applicationName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
           }
         },
         "template": {
@@ -639,6 +646,9 @@
           "contentVersion": "1.0.0.0",
           "parameters": {
             "applicationName": {
+              "type": "string"
+            },
+            "location": {
               "type": "string"
             }
           },
@@ -648,7 +658,7 @@
               "type": "Microsoft.Insights/components",
               "apiVersion": "2018-05-01-preview",
               "name": "[format('plan-{0}', parameters('applicationName'))]",
-              "location": "[resourceGroup().location]",
+              "location": "[parameters('location')]",
               "kind": "web",
               "properties": {
                 "Application_Type": "web"
@@ -662,17 +672,14 @@
             }
           }
         }
-      },
-      "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', deployment().name)]"
-      ]
+      }
     }
   ],
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.3.1.62928",
-      "templateHash": "1822258807008628057"
+      "templateHash": "13305270302817536435"
     }
   }
 }

@@ -4,7 +4,6 @@ on:
       - main
       - feature/**
     # paths:
-      
     #   - "infra/**"
 
 name: Azure Deploy
@@ -29,12 +28,12 @@ jobs:
       - name: Infrastructure ARM deploy
         uses: azure/arm-deploy@v1
         with:
-          scope: subscription
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
           resourceGroupName: ${{ secrets.AZURE_RG }}
-          region: ${{ env.LOCATION }}
           template: ./infra/main.json
-          parameters: applicationName="${{ env.APPLICATION_NAME }}"
+          parameters: 
+            applicationName="${{ env.APPLICATION_NAME }}"
+            location="${{ env.LOCATION }}"
             objectId="${{ secrets.AZURE_SP_OBJECT_ID }}"
 
 

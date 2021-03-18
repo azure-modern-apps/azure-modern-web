@@ -1,30 +1,22 @@
 param objectId string
 param applicationName string
-
+param location string
 param publisherEmail string = 'duhunter@microsoft.com'
 param publisherName string = 'Duncan Hunter'
 param cosmosDatabaseName string = 'BankingDatabase'
 
-targetScope = 'subscription'
-
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2020-06-01' = {
-  name: deployment().name
-  location: deployment().location
-}
-
 module apiManagement 'api-management.bicep' = {
   name: 'apiManagementDeploy'
-  scope: resourceGroup
   params: {
+    applicationName: applicationName
+    location: location
     publisherEmail: publisherEmail
     publisherName: publisherName
-    applicationName: applicationName
   }
 }
 
 module frontDoor 'front-door.bicep' = {
   name: 'frontDoorDeployment'
-  scope: resourceGroup
   params: {
     applicationName: applicationName
     apimHostname: apiManagement.outputs.apimHostname
@@ -33,9 +25,9 @@ module frontDoor 'front-door.bicep' = {
 
 module cosmosdb 'cosmos-db.bicep' = {
   name: 'cosmosDbDeployment'
-  scope: resourceGroup
   params: {
     applicationName: applicationName
+    location: location
     cosmosDatabaseName: cosmosDatabaseName
     keyVaultName: keyVault.outputs.keyVaultName
   }
@@ -43,28 +35,28 @@ module cosmosdb 'cosmos-db.bicep' = {
 
 module storageAccount 'storage-account.bicep' = {
   name: 'storageAccountDeployment'
-  scope: resourceGroup
   params: {
     applicationName: applicationName
+    location: location
     keyVaultName: keyVault.outputs.keyVaultName
   }
 }
 
 module keyVault 'key-vault.bicep' = {
   name: 'keyVaultDeployment'
-  scope: resourceGroup
   params: {
     applicationName: applicationName
+    location: location
     objectId: objectId
   }
 }
 
 module functionApp 'function-app.bicep' = {
   name: 'functionAppDeployment'
-  scope: resourceGroup
   params: {
-    appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey
     applicationName: applicationName
+    location: location
+    appInsightsInstrumentationKey: appInsights.outputs.appInsightsInstrumentationKey
     keyVaultName: keyVault.outputs.keyVaultName
     storageAccount: storageAccount.outputs.storageAccount
     planId: appServicePlan.outputs.planId
@@ -72,17 +64,17 @@ module functionApp 'function-app.bicep' = {
 }
 
 module appServicePlan 'app-service-plan.bicep' = {
-name: 'planDeployment'
-  scope: resourceGroup
+  name: 'planDeployment'
   params: {
     applicationName: applicationName
+    location: location
   }
 }
 
 module appInsights 'app-insights.bicep' = {
   name: 'appInsightsDeployment'
-  scope: resourceGroup
   params: {
     applicationName: applicationName
+    location: location
   }
 }

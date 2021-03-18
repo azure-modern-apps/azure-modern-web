@@ -1,10 +1,11 @@
 param applicationName string
 param cosmosDatabaseName string
 param keyVaultName string
+param location string
 
 resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2020-06-01-preview' = {
   name: 'cosmos-${applicationName}'
-  location: resourceGroup().location
+  location: location
   kind: 'GlobalDocumentDB'
   properties: {
     createMode: 'Default'
@@ -13,7 +14,7 @@ resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2020-06-01-preview' = {
     }
     locations: [
       {
-        locationName: resourceGroup().location
+        locationName: location
         failoverPriority: 0
         isZoneRedundant: false
       }
