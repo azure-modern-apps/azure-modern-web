@@ -1,98 +1,32 @@
 on:
   push:
     branches:
-    - master
-    - feature/**
-    # paths:
-    # - 'infra/**'
+      - master
+      - feature/**
+    paths:
+    - 'infra/**'
 
 name: Azure Deploy
 
 jobs:
-
   deploy:
     environment: DEV
     runs-on: ubuntu-latest
-    
+
     env:
-      LOCATION: 'Australia East'
-      
-      COSMOS_ACCOUNT_NAME: 'cosmos-amw-dev-aue-001'
-      COSMOS_PRIMARY_REGION: 'Australia East'
-      COSMOS_SECONDARY_REGION: 'Australia Southeast'
-      COSMOS_DB_NAME: 'BankingDatabase'
+      LOCATION: "Australia East"
+      APP_NAME: "amw-dev-aue-001"
 
-      APP_SERVICE_PLAN_NAME: 'plan-amw-dev-aue-001'
-
-      STORAGE_ACCOUNT_NAME: 'stamwdevaue001'
-
-      FUNCTION_APP_NAME: 'func-amw-dev-aue-001'
-
-      KEY_VAULT_NAME: 'kv-amw-dev-aue-001'
-      
     steps:
+      - uses: actions/checkout@v2
 
-    - uses: actions/checkout@v2
+      - name: Login via Az module
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Login via Az module
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-      
-    - name: Cosmos Db ARM deploy
-      id: arm-cosmos-db
-      uses: azure/arm-deploy@v1
-      with:
-        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-        resourceGroupName: ${{ secrets.AZURE_RG }}
-        template: ./infra/cosmosDb/azuredeploy.json
-        parameters:
-          accountName="${{ env.COSMOS_ACCOUNT_NAME }}"
-          location="${{ env.LOCATION }}"
-          primaryRegion="${{ env.COSMOS_PRIMARY_REGION }}"
-          secondaryRegion="${{ env.COSMOS_SECONDARY_REGION }}"
-          databaseName="${{ env.COSMOS_DB_NAME }}"
-
-    - name: App Service Plan ARM deploy
-      uses: azure/arm-deploy@v1
-      with:
-        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-        resourceGroupName: ${{ secrets.AZURE_RG }}
-        template: ./infra/appServicePlan/azuredeploy.json
-        parameters:
-          hostingPlanName="${{ env.APP_SERVICE_PLAN_NAME }}"
-          location="${{ env.LOCATION }}"
-
-    - name: Storage Account ARM deploy
-      uses: azure/arm-deploy@v1
-      with:
-        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-        resourceGroupName: ${{ secrets.AZURE_RG }}
-        template: ./infra/storageAccount/azuredeploy.json
-        parameters:
-          storageAccountName="${{ env.STORAGE_ACCOUNT_NAME }}"
-          location="${{ env.LOCATION }}"
-
-    - name: Function App ARM deploy
-      uses: azure/arm-deploy@v1
-      with:
-        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-        resourceGroupName: ${{ secrets.AZURE_RG }}
-        template: ./infra/functionApp/azuredeploy.json
-        parameters:
-          functionAppName="${{ env.FUNCTION_APP_NAME }}"
-          hostingPlanName="${{ env.APP_SERVICE_PLAN_NAME }}"
-          storageAccountName="${{ env.STORAGE_ACCOUNT_NAME }}"
-          location="${{ env.LOCATION }}"
-
-    - name: Key Vault ARM deploy
-      uses: azure/arm-deploy@v1
-      with:
-        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-        resourceGroupName: ${{ secrets.AZURE_RG }}
-        template: ./infra/keyVault/azuredeploy.json
-        parameters:
-          keyVaultName="${{ env.KEY_VAULT_NAME }}"
-          location="${{ env.LOCATION }}"
-          objectId="${{ secrets.AZURE_SP_OBJECT_ID }}"
-          cosmosDbAccountName="${{ steps.arm-cosmos-db.outputs.cosmosDbAccountName }}"
+      - name: Deploy Infrastructure
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az deployment sub create -f ./infra/main.bicep --name "rg-${{ env.APP_NAME }}" --location="${{ env.LOCATION }}" --parameters applicationName="${{ env.APP_NAME }}" objectId="${{ secrets.AZURE_SP_OBJECT_ID }}"
