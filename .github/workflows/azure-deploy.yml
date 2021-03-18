@@ -3,8 +3,9 @@ on:
     branches:
       - main
       - feature/**
-    paths:
-      - "infra/**"
+    # paths:
+      
+    #   - "infra/**"
 
 name: Azure Deploy
 
@@ -33,9 +34,9 @@ jobs:
           resourceGroupName: ${{ secrets.AZURE_RG }}
           region: ${{ env.LOCATION }}
           template: ./infra/main.json
-          parameters:
-            applicationName="${{ env.APPLICATION_NAME }}"
+          parameters: applicationName="${{ env.APPLICATION_NAME }}"
             objectId="${{ secrets.AZURE_SP_OBJECT_ID }}"
+
 
       # TODO: Swap to use bicep cli when docker image updated https://github.com/Azure/bicep/issues/1683
       # - name: Deploy Infrastructure
