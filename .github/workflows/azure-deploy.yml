@@ -3,19 +3,19 @@ on:
     branches:
       - main
       - feature/**
-    # paths:
-    #   - "infra/**"
+    paths:
+      - "infra/**"
 
 name: Azure Deploy
 
 jobs:
   deploy:
     environment: DEV
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     env:
       LOCATION: "Australia East"
-      APP_NAME: "amw-dev-aue-001"
+      APPLICATION_NAME: "amw-dev-aue-001"
 
     steps:
       - uses: actions/checkout@v2
@@ -25,8 +25,19 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Deploy Infrastructure
-        uses: azure/CLI@v1
+      - name: Infrastructure ARM deploy
+        uses: azure/arm-deploy@v1
         with:
-          inlineScript: |
-            az deployment sub create -f ./infra/main.bicep --name "rg-${{ env.APP_NAME }}" --location="${{ env.LOCATION }}" --parameters applicationName="${{ env.APP_NAME }}" objectId="${{ secrets.AZURE_SP_OBJECT_ID }}"
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+          resourceGroupName: ${{ secrets.AZURE_RG }}
+          template: ./infra/main.json
+          parameters:
+            applicationName="${{ env.APPLICATION_NAME }}"
+            location="${{ env.LOCATION }}"
+            objectId="${{ secrets.AZURE_SP_OBJECT_ID }}"
+
+      # - name: Deploy Infrastructure
+      #   uses: azure/CLI@v1
+      #   with:
+      #     inlineScript: |
+      #       az deployment sub create -f ./infra/main.bicep --name "rg-${{ env.APPLICATION_NAME }}" --location="${{ env.LOCATION }}" --parameters applicationName="${{ env.APPLICATION_NAME }}" objectId="${{ secrets.AZURE_SP_OBJECT_ID }}"
