@@ -3,8 +3,8 @@ on:
     branches:
       - main
       - feature/**
-    paths:
-      - "infra/**"
+    # paths:
+    #   - "infra/**"
 
 name: Azure Deploy
 
