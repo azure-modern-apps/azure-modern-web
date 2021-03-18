@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      LOCATION: "Australia East"
+      LOCATION: "australiaeast"
       APPLICATION_NAME: "amw-dev-aue-001"
 
     steps:
@@ -28,6 +28,7 @@ jobs:
       - name: Infrastructure ARM deploy
         uses: azure/arm-deploy@v1
         with:
+          scope: subscription
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
           resourceGroupName: ${{ secrets.AZURE_RG }}
           region: ${{ env.LOCATION }}
