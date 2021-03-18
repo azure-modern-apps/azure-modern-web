@@ -27,6 +27,8 @@ jobs:
 
       - name: Install bicep for az cli
         run: |
+          apk update
+          apk install libc6-compat
           curl -Lo bicepinstall https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64
           chmod +x ./bicepinstall
           sudo mv ./bicepinstall /usr/local/bin/bicep
