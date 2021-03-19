@@ -12,8 +12,10 @@ env:
   DOTNET_VERSION: '3.1.x'          
 
 jobs:
+
   build:
 
+    environment: DEV
     runs-on: ubuntu-latest
 
     steps:
@@ -37,10 +39,28 @@ jobs:
     - name: Publish
       run: dotnet publish --no-build  --output ./output ./api/BankingApi/BankingApi.csproj
 
-    - name: "Login via Azure CLI"
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v1
+      with:
+          name: BankingAPI
+          path: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+
+  deploy:
+
+    runs-on: ubuntu-latest
+    needs: [build]
+    environment: DEV
+
+    - name: Download website
+      uses: actions/download-artifact@v1
+      with:
+          name: BankingAPI
+          path: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+
+    - name: Login via Az module
       uses: azure/login@v1
       with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Azure Functions Action
       uses: Azure/functions-action@v1.3.1
