@@ -3,8 +3,9 @@ name: Api Deploy
 on:
   push:
     branches:
-    - master
+    - main
     - feature/**
+   workflow_dispatch:
 
 env:
   AZURE_FUNCTIONAPP_NAME: func-amw-dev-aue-001  
