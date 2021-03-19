@@ -8,7 +8,7 @@ on:
 
 env:
   AZURE_FUNCTIONAPP_NAME: func-amw-dev-aue-001  
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: './api' 
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: './output' 
   DOTNET_VERSION: '3.1.x'          
 
 jobs:
@@ -32,12 +32,12 @@ jobs:
       run: dotnet build --no-restore --output ./output ./api/AzureModernWeb.sln
 
     - name: Test
-      run: dotnet test --no-build --verbosity normal ./api/AzureModernWeb.sln
+      run: dotnet test --no-build --verbosity normal ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
 
     - name: 'Run Azure Functions Action'
       uses: Azure/functions-action@v1
       id: fa
       with:
         app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
-        package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+        package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
         publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
