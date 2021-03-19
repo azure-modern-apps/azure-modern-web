@@ -95,6 +95,12 @@
       "metadata": {
         "description": "Specifies the CosmosDB account name."
       }
+    },
+    "functionAppName": {
+      "type": "string",
+      "metadata": {
+        "description": "Specifies the Function App name."
+      }
     }
   },
   "resources": [
@@ -115,6 +121,24 @@
             "permissions": {
               "keys": "[parameters('keysPermissions')]",
               "secrets": "[parameters('secretsPermissions')]"
+            }
+          },
+          {
+            "objectId": "[reference(resourceId('Microsoft.Web/sites/', parameters('functionAppName')), providers('Microsoft.Web', 'sites').apiVersions[0], 'Full').identity.principalId]",
+            "tenantId": "[parameters('tenantId')]",
+            "permissions": {
+              "keys": [
+                "Get",
+                "List"
+              ],
+              "secrets": [
+                "Get",
+                "List"
+              ],
+              "certificates": [
+                "Get",
+                "List"
+              ]
             }
           }
         ],
