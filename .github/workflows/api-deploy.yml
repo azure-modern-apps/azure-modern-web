@@ -29,10 +29,13 @@ jobs:
       run: dotnet restore api/AzureModernWeb.sln
 
     - name: Build
-      run: dotnet build --no-restore --output ./output ./api/AzureModernWeb.sln
+      run: dotnet build --no-restore ./api/AzureModernWeb.sln
 
     - name: Test
-      run: dotnet test --no-build --verbosity normal ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+      run: dotnet test --no-build --verbosity normal ./api/AzureModernWeb.sln
+
+    - name: Publish
+      run: dotnet build --no-build  --output ./output ./api/BankingApi/BankingApi.csproj
 
     - name: 'Run Azure Functions Action'
       uses: Azure/functions-action@v1
