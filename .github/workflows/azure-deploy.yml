@@ -2,7 +2,6 @@ on:
   push:
     branches:
       - main
-      - feature/**
     paths:
       - 'infra/**'
   workflow_dispatch:
