@@ -42,8 +42,8 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v1
       with:
-          name: BankingAPI
-          path: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+        name: BankingAPI
+        path: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
 
   deploy:
 
@@ -51,11 +51,13 @@ jobs:
     needs: [build]
     environment: DEV
 
+    steps:
+
     - name: Download website
       uses: actions/download-artifact@v1
       with:
-          name: BankingAPI
-          path: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+        name: BankingAPI
+        path: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
 
     - name: Login via Az module
       uses: azure/login@v1
