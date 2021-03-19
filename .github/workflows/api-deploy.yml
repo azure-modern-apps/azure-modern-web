@@ -37,9 +37,13 @@ jobs:
     - name: Publish
       run: dotnet publish --no-build  --output ./output ./api/BankingApi/BankingApi.csproj
 
-    - name: 'Run Azure Functions Action'
-      uses: Azure/functions-action@v1
-      id: fa
+    - name: "Login via Azure CLI"
+      uses: azure/login@v1
+      with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Azure Functions Action
+      uses: Azure/functions-action@v1.3.1
       with:
         app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
         package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
