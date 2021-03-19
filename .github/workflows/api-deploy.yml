@@ -1,0 +1,43 @@
+name: Api Deploy
+
+on:
+  push:
+    branches:
+    - master
+    - feature/**
+
+env:
+  AZURE_FUNCTIONAPP_NAME: func-amw-dev-aue-001  
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: './api' 
+  DOTNET_VERSION: '3.1.x'          
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Restore dependencies
+      run: dotnet restore api/AzureModernWeb.sln
+
+    - name: Build
+      run: dotnet build --no-restore --output ./output ./api/AzureModernWeb.sln
+
+    - name: Test
+      run: dotnet test --no-build --verbosity normal ./api/AzureModernWeb.sln
+
+    - name: 'Run Azure Functions Action'
+      uses: Azure/functions-action@v1
+      id: fa
+      with:
+        app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+        package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+        publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
