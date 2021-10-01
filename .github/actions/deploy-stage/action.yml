@@ -1,0 +1,148 @@
+name: 'Deploy Stage'
+description: 'Deploy Stage'
+
+inputs:
+  azure-credentials:
+    description: 'Azure Credentials'
+    required: true
+  azure-subscription-id:
+    description: 'Azure Subscription Id'
+    required: true
+  azure-resource-group:
+    description: 'Azure Resource Group'
+    required: true
+  azure-primary-location:
+    description: 'Primary Azure Deployment Region'
+    required: false
+    default: 'Australia East'
+  azure-secondary-location:
+    description: 'Secondary Azure Deployment Region'
+    required: false
+    default: 'Australia Southeast'
+  azure-sp-object-id:
+    description: 'Azure Service Principal Object Id'
+    required: true
+  environment:
+    description: 'Environment Name'
+    required: false
+    default: dev
+  location-short:
+    description: 'Environment Location Short Name'
+    required: false
+    default: aue
+  prefix:
+    description: 'Environment Prefix'
+    required: false
+    default: amw
+  postfix:
+    description: 'Environment Postfix'
+    required: false
+    default: '001'
+  cosmos-db-name: 
+    description: "Cosmos Db Name"
+    required: false
+    default: 'BankingDatabase'
+
+outputs:
+  cosmos-account-name: 
+    description: "Cosmos Account Name"
+    value: ${{ steps.resource-names.outputs.cosmos-account-name }}
+  cosmos-db-name: 
+    description: "Cosmos Db Name"
+    value: ${{ inputs.cosmos-db-name }}
+  app-service-plan-name: 
+    description: "App Service Plan Name"
+    value: ${{ steps.resource-names.outputs.app-service-plan-name }}
+  storage-account-name: 
+    description: "Storage Account Name"
+    value: ${{ steps.resource-names.outputs.storage-account-name }}
+  function-app-name: 
+    description: "Function App Name"
+    value: ${{ steps.resource-names.outputs.function-app-name }}
+  key-vault-name: 
+    description: "Key Vault Name"
+    value: ${{ steps.resource-names.outputs.key-vault-name }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set Resource Variables
+      id: resource-names
+      run: |
+        echo "::set-output name=cosmos-account-name::cosmos-${{ inputs.prefix }}-${{ inputs.environment }}-${{ inputs.location-short }}-${{ inputs.postfix }}"
+        echo "::set-output name=app-service-plan-name::plan-${{ inputs.prefix }}-${{ inputs.environment }}-${{ inputs.location-short }}-${{ inputs.postfix }}"
+        echo "::set-output name=storage-account-name::st${{ inputs.prefix }}${{ inputs.environment }}${{ inputs.location-short }}${{ inputs.postfix }}"
+        echo "::set-output name=function-app-name::func-${{ inputs.prefix }}-${{ inputs.environment }}-${{ inputs.location-short }}-${{ inputs.postfix }}"
+        echo "::set-output name=key-vault-name::kv-${{ inputs.prefix }}-${{ inputs.environment }}-${{ inputs.location-short }}-${{ inputs.postfix }}"
+      shell: bash
+    
+    - name: Azure Authentication
+      uses: azure/login@v1
+      with:
+        creds: ${{ inputs.azure-credentials }}
+
+    - name: Create Resource Group
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          if [ $(az group exists --name "${{ inputs.azure-resource-group }}") = false ]; then
+            az group create --name "${{ inputs.azure-resource-group }}" --location "${{ inputs.azure-primary-location }}"
+          fi
+
+    - name: Cosmos Db ARM deploy
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ inputs.azure-subscription-id }}
+        resourceGroupName: ${{ inputs.azure-resource-group }}
+        template: ./infra/cosmosDb/azuredeploy.json
+        parameters:
+          accountName="${{ steps.resource-names.outputs.cosmos-account-name }}"
+          location="${{ inputs.azure-primary-location }}"
+          primaryRegion="${{ inputs.azure-primary-location }}"
+          secondaryRegion="${{ inputs.azure-secondary-location }}"
+          databaseName="${{ inputs.cosmos-db-name }}"
+
+    - name: App Service Plan ARM deploy
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ inputs.azure-subscription-id }}
+        resourceGroupName: ${{ inputs.azure-resource-group }}
+        template: ./infra/appServicePlan/azuredeploy.json
+        parameters:
+          hostingPlanName="${{ steps.resource-names.outputs.app-service-plan-name }}"
+          location="${{ inputs.azure-primary-location }}"
+
+    - name: Storage Account ARM deploy
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ inputs.azure-subscription-id }}
+        resourceGroupName: ${{ inputs.azure-resource-group }}
+        template: ./infra/storageAccount/azuredeploy.json
+        parameters:
+          storageAccountName="${{ steps.resource-names.outputs.storage-account-name }}"
+          location="${{ inputs.azure-primary-location }}"
+
+    - name: Function App ARM deploy
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ inputs.azure-subscription-id }}
+        resourceGroupName: ${{ inputs.azure-resource-group }}
+        template: ./infra/functionApp/azuredeploy.json
+        parameters:
+          functionAppName="${{ steps.resource-names.outputs.function-app-name }}"
+          hostingPlanName="${{ steps.resource-names.outputs.app-service-plan-name }}"
+          storageAccountName="${{ steps.resource-names.outputs.storage-account-name }}"
+          location="${{ inputs.azure-primary-location }}"
+
+    - name: Key Vault ARM deploy
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ inputs.azure-subscription-id }}
+        resourceGroupName: ${{ inputs.azure-resource-group }}
+        template: ./infra/keyVault/azuredeploy.json
+        parameters:
+          keyVaultName="${{ steps.resource-names.outputs.key-vault-name }}"
+          location="${{ inputs.azure-primary-location }}"
+          objectId="${{ inputs.azure-sp-object-id }}"
+          cosmosDbAccountName="${{ steps.resource-names.outputs.cosmos-account-name }}"
+          functionAppName="${{ steps.resource-names.outputs.function-app-name }}"
